@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="static/css/leaflet.css" /><link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css"><link rel="stylesheet" href="static/css/L.Control.Locate.min.css" />
+        <link rel="stylesheet" type="text/css" href="static/css/qgis2web.css">
+        <link rel="stylesheet" href="static/css/MarkerCluster.css" />
+        <link rel="stylesheet" href="static/css/MarkerCluster.Default.css" />
+        <script src="{{url_for('static',filename='js/leaflet.js')}}"></script><script src="{{url_for('static',filename='js/L.Control.Locate.min.js')}}"></script>
+        <script src="{{url_for('static', filename='js/leaflet-heat.js')}}"></script>
+        <script src="{{url_for('static',filename='js/leaflet.rotatedMarker.js')}}"></script>
+        <script src="{{url_for('static',filename='js/OSMBuildings-Leaflet.js')}}"></script>
+        <script src="{{url_for('static',filename='js/leaflet-hash.js')}}"></script>
+        <script src="{{url_for('static',filename='js/Autolinker.min.js')}}"></script>
+        <script src="{{url_for('static',filename='js/leaflet.markercluster.js')}}"></script>
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="{{url_for('static',filename='data/15minconcavehull0.js')}}"></script>
+        <script src="{{url_for('static',filename='data/10minconcavehull1.js')}}"></script>
+        <script src="{{url_for('static',filename='data/5minconcavehull2.js')}}"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[28.531966485,76.9578198273],[28.760644515,77.3576654727]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://www.urbanfoundrylabs.com" target="_blank">UrbanFoundry Labs Production</a>');
+        L.control.locate().addTo(map);
+        var feature_group = new L.featureGroup([]);
+        var bounds_group = new L.featureGroup([]);
+        var raster_group = new L.LayerGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 28
+        });
+        basemap0.addTo(map);
+        function setBounds() {
+        }
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
+        function pop_15minconcavehull0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_15minconcavehull0(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(String(feature.properties['id'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count'] !== null ? Autolinker.link(String(feature.properties['count'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_15minconcavehull0() {
+            return {
+                pane: 'pane_15minconcavehull0',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.4)',
+                dashArray: '10,5,1,5,1,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(248,232,2,0.4)',
+            }
+        }
+        map.createPane('pane_15minconcavehull0');
+        map.getPane('pane_15minconcavehull0').style.zIndex = 600;
+    var layer_15minconcavehull0 = new L.geoJson(json_15minconcavehull0, {
+        pane: 'pane_15minconcavehull0',
+        onEachFeature: pop_15minconcavehull0,
+        style: style_15minconcavehull0
+    });
+        bounds_group.addLayer(layer_15minconcavehull0);
+        feature_group.addLayer(layer_15minconcavehull0);
+        function pop_10minconcavehull1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_10minconcavehull1(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(String(feature.properties['id'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count'] !== null ? Autolinker.link(String(feature.properties['count'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_10minconcavehull1() {
+            return {
+                pane: 'pane_10minconcavehull1',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.6)',
+                dashArray: '10,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(99,130,82,0.6)',
+            }
+        }
+        map.createPane('pane_10minconcavehull1');
+        map.getPane('pane_10minconcavehull1').style.zIndex = 601;
+    var layer_10minconcavehull1 = new L.geoJson(json_10minconcavehull1, {
+        pane: 'pane_10minconcavehull1',
+        onEachFeature: pop_10minconcavehull1,
+        style: style_10minconcavehull1
+    });
+        bounds_group.addLayer(layer_10minconcavehull1);
+        feature_group.addLayer(layer_10minconcavehull1);
+        function pop_5minconcavehull2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_5minconcavehull2(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(String(feature.properties['id'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['count'] !== null ? Autolinker.link(String(feature.properties['count'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_5minconcavehull2() {
+            return {
+                pane: 'pane_5minconcavehull2',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.6)',
+                dashArray: '1,5',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(254,114,89,0.6)',
+            }
+        }
+        map.createPane('pane_5minconcavehull2');
+        map.getPane('pane_5minconcavehull2').style.zIndex = 602;
+    var layer_5minconcavehull2 = new L.geoJson(json_5minconcavehull2, {
+        pane: 'pane_5minconcavehull2',
+        onEachFeature: pop_5minconcavehull2,
+        style: style_5minconcavehull2
+    });
+        bounds_group.addLayer(layer_5minconcavehull2);
+        feature_group.addLayer(layer_5minconcavehull2);
+        raster_group.addTo(map);
+        feature_group.addTo(map);
+        var baseMaps = {'OSM B&W': basemap0};
+        L.control.layers(baseMaps,{'<img src="static/legend/5minconcavehull2.png" /> 5min_concavehull': layer_5minconcavehull2,'<img src="static/legend/10minconcavehull1.png" /> 10min_concavehull': layer_10minconcavehull1,'<img src="static/legend/15minconcavehull0.png" /> 15min_concavehull': layer_15minconcavehull0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
